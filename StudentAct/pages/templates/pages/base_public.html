@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Task Tracker{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <style type="text/tailwindcss">
+        input[type=text], input[type=password] {
+            @apply w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans antialiased" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <nav class="bg-blue-600 p-4 shadow-md text-white">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="{% url 'home' %}" class="font-bold text-xl">Task Tracker</a>
+            <div class="flex items-center gap-4 text-sm">
+                {% if user.is_authenticated %}
+                    <span>Hi, {{ user.username }}</span>
+                    {% if user.is_staff %}<a href="{% url 'admin:index' %}" class="hover:underline">Admin</a>{% endif %}
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="hover:underline">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:underline">Log in</a>
+                    <a href="{% url 'register' %}" class="hover:underline">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
